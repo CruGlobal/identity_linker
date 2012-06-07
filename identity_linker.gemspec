@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["josh.starcher@gmail.com"]
   gem.description   = %q{Ruby library for accessing Cru's Identity Linking system}
   gem.summary       = %q{Ruby library for accessing Cru's Identity Linking system}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/CruGlobal/identity_linker"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
