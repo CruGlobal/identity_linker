@@ -14,5 +14,5 @@ Gem::Specification.new do |gem|
   gem.name          = "identity_linker"
   gem.require_paths = ["lib"]
   gem.version       = IdentityLinker::VERSION
-  gem.add_dependency('savon', '~> 0.9.14')
+  gem.add_dependency('savon', '~> 2.1.0')
 end

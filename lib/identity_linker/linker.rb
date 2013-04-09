@@ -5,10 +5,14 @@ module IdentityLinker
   class Linker
     extend Savon::Model
 
-    endpoint "https://signin.ccci.org/ws-identity-linking/idlinking"
-    namespace "http://webservice.linking.idm.ccci.org/"
+    #endpoint "https://signin.ccci.org/ws-identity-linking/idlinking"
+    #namespace "http://webservice.linking.idm.ccci.org/"
 
     attr_reader :server_id, :server_secret
+
+    def self.client
+      @client ||= Savon.client(wsdl: IdentityLinker.config.wsdl)
+    end
 
     def initialize(server_id = nil, server_secret = nil)
       @server_id = server_id || IdentityLinker.config.server_id
@@ -16,25 +20,18 @@ module IdentityLinker
     end
 
     def find_linked_identity(id_type, id_value, target)
-      begin
-        response = client.request(:wsdl, :find_linked_identity) do
-          xml = <<-END
-             <serverId>#{server_id}</serverId>
-             <serverSecret>#{server_secret}</serverSecret>
-             <identity>
-                <idType>#{id_type}</idType>
-                <idValue>#{id_value}</idValue>
-             </identity>
-             <target>#{target}</target>
-          END
-          soap.body = xml
-        end
+      response = client.call(:find_linked_identity, message: {
+        server_id: server_id,
+        server_secret: server_secret,
+        identity: {
+          id_type: id_type,
+          id_value: id_value
+        },
+        target: target
+      })
 
-        if response.success?
-          return response.to_hash[:find_linked_identity_response][:linked_identity]
-        end
-      rescue Savon::SOAP::Fault => e
-        raise Error.new(e)
+      if response.success?
+        return response.to_hash[:find_linked_identity_response][:linked_identity]
       end
 
       nil
@@ -45,26 +42,20 @@ module IdentityLinker
     end
 
     def find_linked_identity_with_details(id_type, id_value, target)
-      begin
-        response = client.request(:wsdl, :find_linked_identity_with_details) do
-          xml = <<-END
-               <serverId>#{server_id}</serverId>
-               <serverSecret>#{server_secret}</serverSecret>
-               <identity>
-                  <idType>#{id_type}</idType>
-                  <idValue>#{id_value}</idValue>
-               </identity>
-               <target>#{target}</target>
-          END
-          soap.body = xml
-        end
+      response = client.call(:find_linked_identity_with_details, message: {
+        server_id: server_id,
+        server_secret: server_secret,
+        identity: {
+          id_type: id_type,
+          id_value: id_value
+        },
+        target: target
+      })
 
-        if response.success?
-          return response.to_hash[:find_linked_identity_with_details_response][:linked_identity]
-        end
-      rescue Savon::SOAP::Fault => e
-        raise Error.new(e)
+      if response.success?
+        return response.to_hash[:find_linked_identity_with_details_response][:linked_identity]
       end
+
       nil
     end
 
@@ -73,24 +64,17 @@ module IdentityLinker
     end
 
     def find_all_linked_identities(id_type, id_value)
-      begin
-        response = client.request(:wsdl, :find_all_linked_identities) do
-          xml = <<-END
-           <serverId>#{server_id}</serverId>
-           <serverSecret>#{server_secret}</serverSecret>
-           <identity>
-              <idType>#{id_type}</idType>
-              <idValue>#{id_value}</idValue>
-           </identity>
-          END
-          soap.body = xml
-        end
+      response = client.call(:find_all_linked_identities, message: {
+        server_id: server_id,
+        server_secret: server_secret,
+        identity: {
+          id_type: id_type,
+          id_value: id_value
+        }
+      })
 
-        if response.success?
-          return response.to_hash[:find_all_linked_identities_response][:linked_identity]
-        end
-      rescue Savon::SOAP::Fault => e
-        raise Error.new(e)
+      if response.success?
+        return response.to_hash[:find_all_linked_identities_response][:linked_identity]
       end
 
       nil
@@ -101,24 +85,17 @@ module IdentityLinker
     end
 
     def find_all_linked_identities_with_details(id_type, id_value)
-      begin
-        response = client.request(:wsdl, :find_all_linked_identities_with_details) do
-          xml = <<-END
-           <serverId>#{server_id}</serverId>
-           <serverSecret>#{server_secret}</serverSecret>
-           <identity>
-              <idType>#{id_type}</idType>
-              <idValue>#{id_value}</idValue>
-           </identity>
-          END
-          soap.body = xml
-        end
+      response = client.call(:find_all_linked_identities_with_details, message: {
+        server_id: server_id,
+        server_secret: server_secret,
+        identity: {
+          id_type: id_type,
+          id_value: id_value
+        }
+      })
 
-        if response.success?
-          return response.to_hash[:find_all_linked_identities_with_details_response][:linked_identity]
-        end
-      rescue Savon::SOAP::Fault => e
-        raise Error.new(e)
+      if response.success?
+        return response.to_hash[:find_all_linked_identities_with_details_response][:linked_identity]
       end
 
       nil
@@ -129,25 +106,18 @@ module IdentityLinker
     end
 
     def find_linked_identities_of_type(id_type, id_value, target)
-      begin
-        response = client.request(:wsdl, :find_linked_identities_of_type) do
-          xml = <<-END
-           <serverId>#{server_id}</serverId>
-           <serverSecret>#{server_secret}</serverSecret>
-           <identity>
-              <idType>#{id_type}</idType>
-              <idValue>#{id_value}</idValue>
-           </identity>
-           <target>#{target}</target>
-          END
-          soap.body = xml
-        end
+      response = client.call(:find_linked_identities_of_type, message: {
+        server_id: server_id,
+        server_secret: server_secret,
+        identity: {
+          id_type: id_type,
+          id_value: id_value
+        },
+        target: target
+      })
 
-        if response.success?
-          return [response.to_hash[:find_linked_identities_of_type_response][:linked_identity]].flatten.compact
-        end
-      rescue Savon::SOAP::Fault => e
-        raise Error.new(e)
+      if response.success?
+        return [response.to_hash[:find_linked_identities_of_type_response][:linked_identity]].flatten.compact
       end
 
       nil
