@@ -11,7 +11,7 @@ module IdentityLinker
     attr_reader :server_id, :server_secret
 
     def self.client
-      @client ||= Savon.client(wsdl: IdentityLinker.config.wsdl)
+      @client ||= Savon.client(wsdl: IdentityLinker.config.wsdl, ssl_verify_mode: :none)
     end
 
     def initialize(server_id = nil, server_secret = nil)
